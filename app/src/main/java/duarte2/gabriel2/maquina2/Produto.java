@@ -1,4 +1,4 @@
-package duarte.gabriel.maquina;
+package duarte2.gabriel2.maquina2;
 
 /**
  * Created by Yago on 22-Jul-17.

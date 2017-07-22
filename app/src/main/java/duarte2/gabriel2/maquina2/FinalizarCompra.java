@@ -1,6 +1,5 @@
-package duarte.gabriel.maquina;
+package duarte2.gabriel2.maquina2;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -115,7 +114,7 @@ public class FinalizarCompra extends AppCompatActivity {
     }
 
     private void build(){
-        Credentials credentials = new Credentials("rklxXaENSVQB", "aJ2JjKLrkpy1");
+        Credentials credentials = new Credentials("9IFh9sWlm1T8", "d2mvVkMcOV2Z");
         //Credentials credentials = new Credentials("2ED3O7cvHJPD", "yKEOgnhXyJAU");
 
         orderManager = new OrderManager(credentials, this);

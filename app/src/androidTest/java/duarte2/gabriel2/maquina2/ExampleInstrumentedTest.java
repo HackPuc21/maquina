@@ -1,4 +1,4 @@
-package duarte.gabriel.maquina;
+package duarte2.gabriel2.maquina2;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

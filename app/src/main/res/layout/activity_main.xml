@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="duarte.gabriel.maquina.MainActivity"
+    tools:context="duarte2.gabriel2.maquina2.MainActivity"
     android:background="@drawable/radialback">
 
     <Button
