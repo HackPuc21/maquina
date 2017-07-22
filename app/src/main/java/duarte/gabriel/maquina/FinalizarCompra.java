@@ -12,7 +12,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -31,6 +38,7 @@ public class FinalizarCompra extends AppCompatActivity {
     OrderManager orderManager;
     Order order;
     TextView txtValue, txtQuantidade;
+    ArrayList<Produto> produtos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +74,9 @@ public class FinalizarCompra extends AppCompatActivity {
             temp.put("Fourth", "R$ 0,00");
             listProducts.add(temp);
             total += p.getValue();
+            Produto pp = getProduto(p.getKey().toString());
+            if(pp != null)
+                produtos.add(pp);
         }
 
 
@@ -118,45 +129,44 @@ public class FinalizarCompra extends AppCompatActivity {
 
     private void createOrder(){
         if(order != null){
-            // Identificação do produto (Stock Keeping Unit)
-            String sku = "2891820317391823";
-            String name = "Coca-cola lata";
+            for(Produto p : produtos)
+                order.addItem(p.getId(), p.getDescricao(), p.getValor(), p.getQuantidade(), "UNIDADE");
 
-            int unitPrice = 550;
-            int quantity = 3;
+            try{
+                orderManager.placeOrder(order);
+                PaymentListener paymentListener = new PaymentListener() {
+                    @Override
+                    public void onStart() {
+                        Log.d("MinhaApp", "O pagamento começou.");
+                    }
 
-            order.addItem(sku, name, unitPrice, quantity, "UNIDADE");
+                    @Override
+                    public void onPayment(@NotNull Order order) {
+                        Log.d("MinhaApp", "Um pagamento foi realizado.");
+                        Toast.makeText(FinalizarCompra.this, "Pagamento realizado!", Toast.LENGTH_LONG).show();
+                        goBack();
+                    }
 
-            orderManager.placeOrder(order);
-            PaymentListener paymentListener = new PaymentListener() {
-                @Override
-                public void onStart() {
-                    Log.d("MinhaApp", "O pagamento começou.");
-                }
+                    @Override public void onCancel() {
+                        Log.d("MinhaApp", "A operação foi cancelada.");
+                        Toast.makeText(FinalizarCompra.this, "Pagamento não efetuado.", Toast.LENGTH_LONG).show();
+                    }
 
-                @Override
-                public void onPayment(@NotNull Order order) {
-                    Log.d("MinhaApp", "Um pagamento foi realizado.");
-                    Toast.makeText(FinalizarCompra.this, "Pagamento realizado!", Toast.LENGTH_LONG).show();
-                    goBack();
-                }
+                    @Override public void onError(@NotNull PaymentError paymentError) {
+                        Log.d("MinhaApp", "Houve um erro no pagamento.");
+                        Toast.makeText(FinalizarCompra.this, "Pagamento não efetuado.", Toast.LENGTH_LONG).show();
+                    }
+                };
 
-                @Override public void onCancel() {
-                    Log.d("MinhaApp", "A operação foi cancelada.");
-                    Toast.makeText(FinalizarCompra.this, "Pagamento não efetuado.", Toast.LENGTH_LONG).show();
-                }
+                String orderId = order.getId();
+                long value = order.getPrice();
+                orderManager.checkoutOrder(orderId, value, paymentListener);
+                txtValue.setText("R$ " + value/100 + "," + value%100);
 
-                @Override public void onError(@NotNull PaymentError paymentError) {
-                    Log.d("MinhaApp", "Houve um erro no pagamento.");
-                    Toast.makeText(FinalizarCompra.this, "Pagamento não efetuado.", Toast.LENGTH_LONG).show();
-                }
-            };
+            }catch (Exception e){
 
-            String orderId = order.getId();
-            long value = order.getPrice();
-            txtValue.setText("R$ " + value/100 + "," + value%100);
+            }
 
-            orderManager.checkoutOrder(orderId, value, paymentListener);
         }
     }
 
@@ -164,4 +174,44 @@ public class FinalizarCompra extends AppCompatActivity {
         startActivity(new Intent(this, MainActivity.class));
         this.finish();
     }
+
+    private Produto getProduto(String id){
+        Produto p = null;
+        try{
+            JSONObject jsonObject = getJSONObjectFromURL("" + id);
+            //Toast.makeText(this,, Toast.LENGTH_SHORT).show();
+            Log.d("JSON", jsonObject.toString());
+        } catch (Exception e) {
+
+        }
+
+        return p;
+    }
+
+    public static JSONObject getJSONObjectFromURL(String urlString) throws IOException, JSONException {
+        HttpURLConnection urlConnection = null;
+        URL url = new URL(urlString);
+        urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setReadTimeout(10000 /* milliseconds */ );
+        urlConnection.setConnectTimeout(15000 /* milliseconds */ );
+        urlConnection.setDoOutput(true);
+        urlConnection.connect();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+        StringBuilder sb = new StringBuilder();
+
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line + "\n");
+        }
+        br.close();
+
+        String jsonString = sb.toString();
+        System.out.println("JSON: " + jsonString);
+
+        return new JSONObject(jsonString);
+    }
+
+
 }
