@@ -27,15 +27,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/txtValor"
-        android:layout_marginTop="40dp"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp">
+
         <ListView
             android:id="@+id/lista"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true" >
-        </ListView>
+            android:layout_alignParentTop="true"></ListView>
+
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txtQuantidade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/txtValor"
+        android:layout_marginEnd="18dp"
+        android:layout_marginTop="12dp"
+        android:text="0"
+        android:textStyle="bold" />
 
 </RelativeLayout>
