@@ -7,7 +7,7 @@
         android:id="@+id/nome"
         android:layout_height="wrap_content"
         android:layout_width="7dp"
-        android:layout_weight="1.5"
+        android:layout_weight="1.2"
         android:layout_marginLeft="10dp"
         android:textStyle="bold" />
 
@@ -15,17 +15,17 @@
         android:id="@+id/quantidade"
         android:layout_height="wrap_content"
         android:layout_width="7dp"
-        android:layout_weight="0.5" />
+        android:layout_weight="0.3" />
 
     <TextView
         android:id="@+id/valorUnitario"
         android:layout_height="wrap_content"
         android:layout_width="7dp"
-        android:layout_weight="0.5" />
+        android:layout_weight="0.7" />
 
     <TextView
         android:id="@+id/valorFinal"
         android:layout_height="wrap_content"
         android:layout_width="7dp"
-        android:layout_weight="0.5" />
+        android:layout_weight="0.7" />
 </LinearLayout>

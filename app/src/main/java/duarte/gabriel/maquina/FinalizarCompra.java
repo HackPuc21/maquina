@@ -22,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import cielo.orders.domain.Credentials;
 import cielo.orders.domain.Order;
@@ -49,7 +50,7 @@ public class FinalizarCompra extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        txtValue = (TextView)findViewById(R.id.valorFinal);
+        txtValue = (TextView)findViewById(R.id.txtValor);
         txtQuantidade = (TextView)findViewById(R.id.txtQuantidade);
 
         list =(ListView)findViewById(R.id.lista);
@@ -59,27 +60,32 @@ public class FinalizarCompra extends AppCompatActivity {
 
     private void create(){
         listProducts = new ArrayList<HashMap<String,String>>();
+        produtos = new ArrayList<>();
         int total = 0;
+        long val = 0;
         HashMap<String,String> temp=new HashMap<String, String>();
         temp.put("First", "Nome");
-        temp.put("Second", "Quant.");
+        temp.put("Second", "Qtd.");
         temp.put("Third", "R$/unid.");
         temp.put("Fourth", "Total");
         listProducts.add(temp);
         for(HashMap.Entry<String, Integer> p : products.entrySet()){
             temp=new HashMap<String, String>();
-            temp.put("First", p.getKey().toString());
-            temp.put("Second", p.getValue().toString());
-            temp.put("Third", "R$ 0,00");
-            temp.put("Fourth", "R$ 0,00");
-            listProducts.add(temp);
-            total += p.getValue();
-            Produto pp = getProduto(p.getKey().toString());
-            if(pp != null)
-                produtos.add(pp);
+            Produto pp = getProduto(p.getKey().toString(), p.getValue());
+            if(pp != null){
+                temp.put("First", pp.getDescricao());
+                temp.put("Second", p.getValue().toString());
+                temp.put("Third", "R$ " + pp.getValor()/100 + "," + String.format("%02d", pp.getValor()%100));
+                temp.put("Fourth", "R$ " + (pp.getValor() * pp.getQuantidade())/100 + "," +String.format("%02d", (pp.getValor() * pp.getQuantidade())%100));
+                val += pp.getValor() * pp.getQuantidade();
+                listProducts.add(temp);
+                total += p.getValue();
+                    produtos.add(pp);
+            }
         }
 
 
+        txtValue.setText("R$ " + val/100 + "," + String.format("%02d", val%100));
         AdapterListView adapter=new AdapterListView(this, listProducts);
         list.setAdapter(adapter);
         if(total == 1)
@@ -109,7 +115,8 @@ public class FinalizarCompra extends AppCompatActivity {
     }
 
     private void build(){
-        Credentials credentials = new Credentials("2ED3O7cvHJPD", "yKEOgnhXyJAU");
+        Credentials credentials = new Credentials("rklxXaENSVQB", "aJ2JjKLrkpy1");
+        //Credentials credentials = new Credentials("2ED3O7cvHJPD", "yKEOgnhXyJAU");
 
         orderManager = new OrderManager(credentials, this);
         ServiceBindListener serviceBindListener = new ServiceBindListener() {
@@ -132,7 +139,6 @@ public class FinalizarCompra extends AppCompatActivity {
             for(Produto p : produtos)
                 order.addItem(p.getId(), p.getDescricao(), p.getValor(), p.getQuantidade(), "UNIDADE");
 
-            try{
                 orderManager.placeOrder(order);
                 PaymentListener paymentListener = new PaymentListener() {
                     @Override
@@ -161,11 +167,6 @@ public class FinalizarCompra extends AppCompatActivity {
                 String orderId = order.getId();
                 long value = order.getPrice();
                 orderManager.checkoutOrder(orderId, value, paymentListener);
-                txtValue.setText("R$ " + value/100 + "," + value%100);
-
-            }catch (Exception e){
-
-            }
 
         }
     }
@@ -175,16 +176,26 @@ public class FinalizarCompra extends AppCompatActivity {
         this.finish();
     }
 
-    private Produto getProduto(String id){
-        Produto p = null;
-        try{
+    private Produto getProduto(String id, int qtd){
+        Produto p;
+        if(id.trim().equals("9788501073525"))
+            p = new Produto(id, "Livro", qtd, 5000);
+        else if(id.trim().equals("7791293025780"))
+            p = new Produto(id, "Desodorante", qtd, 700);
+        else if(id.trim().equals("7891962026763"))
+            p = new Produto(id, "Biscoito", qtd, 500);
+        else
+            p = new Produto(id, "Não encontrado", qtd, new Random().nextInt(1000));
+
+        /*
+            try{
             JSONObject jsonObject = getJSONObjectFromURL("" + id);
             //Toast.makeText(this,, Toast.LENGTH_SHORT).show();
             Log.d("JSON", jsonObject.toString());
         } catch (Exception e) {
 
         }
-
+        */
         return p;
     }
 
