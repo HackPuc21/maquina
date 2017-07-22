@@ -1,6 +1,7 @@
 package duarte.gabriel.maquina;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -16,11 +17,14 @@ import android.widget.Toast;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import com.google.zxing.Result;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     Button btnAtivarLeitor;
     final int CODE = 0;
     private ZXingScannerView mScannerView;
+    HashMap<Integer, String> products;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         btnAtivarLeitor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
                         == PackageManager.PERMISSION_DENIED)
                     ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.CAMERA}, CODE);
@@ -45,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     @Override
     public void onPause() {
         super.onPause();
-        //mScannerView.stopCamera();
+        mScannerView.stopCamera();
     }
 
     public void QrScanner(){
@@ -54,19 +59,18 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         setContentView(mScannerView);
         mScannerView.setResultHandler(this);
         mScannerView.startCamera();
-
     }
+
 
     @Override
     public void handleResult(Result rawResult) {
 
-        Log.e("handler", rawResult.getText()); // Prints scan results
-        Log.e("handler", rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode)
+        Log.e("handler", rawResult.getText());
+        Log.e("handler", rawResult.getBarcodeFormat().toString());
 
-        Toast.makeText(this, "QR: " + rawResult.getText(), Toast.LENGTH_LONG).show();
-        mScannerView.stopCamera();
-        mScannerView.resumeCameraPreview(this);
-        setContentView(R.layout.activity_main);
+        build(rawResult.getText());
+        startActivity(new Intent(this,MainActivity.class));
+        this.finish();
     }
 
     @Override
@@ -79,4 +83,26 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 QrScanner();
         }
     }
+
+    private void build(String str){
+        products = new HashMap<Integer, String>();
+
+        String args[] = str.split(" ");
+
+        for(String a : args){
+            if(a.contains("*")){
+                String pieces[] = a.split("\\*");
+                products.put(Integer.parseInt(pieces[0]), pieces[1]);
+            }
+            else{
+                products.put(1, a);
+            }
+        }
+
+
+        for(HashMap.Entry<Integer, String> p : products.entrySet())
+            Toast.makeText(this, "QTD: " + p.getKey() + " - Valor: " + p.getValue(), Toast.LENGTH_LONG).show();
+
+    }
+
 }
