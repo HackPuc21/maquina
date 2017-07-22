@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="duarte.gabriel.maquina.FinalizarCompra">
+    tools:context="duarte.gabriel.maquina.FinalizarCompra"
+    android:background="@drawable/radialback">
 
     <TextView
         android:id="@+id/txtValor"
@@ -18,15 +19,15 @@
         android:textStyle="bold"
         tools:layout_editor_absoluteX="133dp"
         tools:layout_editor_absoluteY="63dp"
-        android:layout_marginTop="46dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginTop="100dp"
+        android:layout_centerHorizontal="true"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/txtValor"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:layout_centerHorizontal="true">
         <ListView
             android:id="@+id/lista"
