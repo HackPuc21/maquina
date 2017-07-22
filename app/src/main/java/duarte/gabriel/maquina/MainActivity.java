@@ -14,8 +14,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import cielo.orders.domain.Credentials;
+import cielo.orders.domain.Order;
+import cielo.sdk.order.OrderManager;
+import cielo.sdk.order.ServiceBindListener;
+import cielo.sdk.order.payment.PaymentError;
+import cielo.sdk.order.payment.PaymentListener;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import com.google.zxing.Result;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -25,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     final int CODE = 0;
     private ZXingScannerView mScannerView;
     HashMap<Integer, String> products;
+    OrderManager orderManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +54,11 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                     QrScanner();
             }
         });
+
+
     }
+
+
 
     @Override
     public void onPause() {
@@ -69,7 +82,10 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         Log.e("handler", rawResult.getBarcodeFormat().toString());
 
         build(rawResult.getText());
-        startActivity(new Intent(this,MainActivity.class));
+        Intent intent = new Intent(MainActivity.this, FinalizarCompra.class);
+        intent.putExtra("products", products);
+        startActivity(intent);
+        //startActivity(new Intent(this,MainActivity.class));
         this.finish();
     }
 
@@ -100,8 +116,8 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         }
 
 
-        for(HashMap.Entry<Integer, String> p : products.entrySet())
-            Toast.makeText(this, "QTD: " + p.getKey() + " - Valor: " + p.getValue(), Toast.LENGTH_LONG).show();
+        //for(HashMap.Entry<Integer, String> p : products.entrySet())
+        //    Toast.makeText(this, "QTD: " + p.getKey() + " - Valor: " + p.getValue(), Toast.LENGTH_LONG).show();
 
     }
 
