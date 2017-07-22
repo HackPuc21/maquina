@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     @Override
     public void onPause() {
         super.onPause();
-        mScannerView.stopCamera();
+        //mScannerView.stopCamera();
     }
 
     public void QrScanner(){
