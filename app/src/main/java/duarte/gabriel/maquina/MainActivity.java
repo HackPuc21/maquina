@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     Button btnAtivarLeitor;
     final int CODE = 0;
     private ZXingScannerView mScannerView;
-    HashMap<Integer, String> products;
+    HashMap<String, Integer> products;
     OrderManager orderManager;
 
     @Override
@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
         Log.e("handler", rawResult.getText());
         Log.e("handler", rawResult.getBarcodeFormat().toString());
-
         build(rawResult.getText());
         Intent intent = new Intent(MainActivity.this, FinalizarCompra.class);
         intent.putExtra("products", products);
@@ -104,17 +103,17 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
     private void build(String str){
-        products = new HashMap<Integer, String>();
+        products = new HashMap<String, Integer>();
 
         String args[] = str.split(" ");
 
         for(String a : args){
             if(a.contains("*")){
                 String pieces[] = a.split("\\*");
-                products.put(Integer.parseInt(pieces[0]), pieces[1]);
+                products.put(pieces[1], Integer.parseInt(pieces[0]));
             }
             else{
-                products.put(1, a);
+                products.put(a, 1);
             }
         }
 

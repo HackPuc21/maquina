@@ -24,7 +24,7 @@ import cielo.sdk.order.payment.PaymentListener;
 
 public class FinalizarCompra extends AppCompatActivity {
 
-    HashMap<Integer, String> products;
+    HashMap<String, Integer> products;
     ListView list;
     private ArrayList<HashMap<String, String>> listProducts;
     OrderManager orderManager;
@@ -35,7 +35,7 @@ public class FinalizarCompra extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finalizar_compra);
         Intent intent = getIntent();
-        products = (HashMap<Integer, String>) intent.getSerializableExtra("products");
+        products = (HashMap<String, Integer>) intent.getSerializableExtra("products");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         list =(ListView)findViewById(R.id.lista);
@@ -52,10 +52,10 @@ public class FinalizarCompra extends AppCompatActivity {
         temp.put("Third", "R$/unid.");
         temp.put("Fourth", "Total");
         listProducts.add(temp);
-        for(HashMap.Entry<Integer, String> p : products.entrySet()){
+        for(HashMap.Entry<String, Integer> p : products.entrySet()){
             temp=new HashMap<String, String>();
-            temp.put("First", p.getValue().toString());
-            temp.put("Second", p.getKey().toString());
+            temp.put("First", p.getKey().toString());
+            temp.put("Second", p.getValue().toString());
             temp.put("Third", "R$ 0,00");
             temp.put("Fourth", "R$ 0,00");
             listProducts.add(temp);
