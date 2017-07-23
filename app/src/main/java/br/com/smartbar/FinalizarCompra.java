@@ -1,4 +1,4 @@
-package duarte2.gabriel2.maquina2;
+package br.com.smartbar;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

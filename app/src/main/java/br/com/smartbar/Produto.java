@@ -1,4 +1,4 @@
-package duarte2.gabriel2.maquina2;
+package br.com.smartbar;
 
 /**
  * Created by Yago on 22-Jul-17.

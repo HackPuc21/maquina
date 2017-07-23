@@ -1,4 +1,4 @@
-package duarte2.gabriel2.maquina2;
+package br.com.smartbar;
 
 import org.junit.Test;
 

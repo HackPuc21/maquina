@@ -1,4 +1,4 @@
-package duarte2.gabriel2.maquina2;
+package br.com.smartbar;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
